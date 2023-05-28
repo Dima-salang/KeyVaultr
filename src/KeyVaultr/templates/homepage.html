@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+<title>Vaultr Home Page</title>
+{% endblock%}
+
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row min-vh-100">
+            <div class="col">
+                <div class="display-1 my-5 text-center">KeyVaultr</div>
+                <div class="lead text-center">Multi-layer Encryption Account Management System</div>
+                <div class="text-center mt-3">
+                    <a class="btn btn-lg btn-outline-primary text-white">About Key Vaultr</a>
+                    <a class="btn btn-lg btn-outline-primary text-white" href="{% url 'dashboard' %}">Go to Vault</a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    </div>
+{% endblock %}

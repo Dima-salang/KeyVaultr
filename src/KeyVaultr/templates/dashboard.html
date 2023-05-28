@@ -1,0 +1,212 @@
+    <!DOCTYPE html>
+    <html lang="en">
+    {% extends 'base.html'%}
+    {% load crispy_forms_tags %}
+    {% load static%}
+
+
+
+        {% block title %}
+        <title>KeyVaultr</title>
+        {% endblock %}
+
+        
+
+        
+        
+
+
+   {% block content %}
+        <div class="modal fade" id="createCredentialModal" tabindex="-1" role="dialog"
+            aria-labelledby="createCredentialModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="createCredentialModalLabel">Create Account Credential</h5>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body text-white">
+                        <form method="post">
+                            <div class="text-center">
+                                <button type="button" id="generatePasswordBtn" class="btn btn-primary">Generate Secure Random Password</button>
+                            </div>  
+                            
+                            {% csrf_token %}
+                            {{form|crispy}}
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Create Credential</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="modal fade" id="checkPINModal" tabindex="-1" role="dialog"
+            aria-labelledby="checkPINModal" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="checkPINModalLabel">Create Account Credential</h5>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body text-white">
+                        <form method="post">
+                            {% csrf_token %}
+                            {{form|crispy}}
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Create Credential</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="container-fluid">
+            <div class="row min-vh-100">
+                <div class="col px-0">
+                    <div class="header text-center mt-5">
+             
+                        {% if messages %}
+                        <div class="container">
+                          {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                              {{ message }}
+                              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                          {% endfor %}
+                        </div>
+                      {% endif %}
+             
+                        <h1>Dashboard</h1>
+                        <h2>Account Credentials</h2>
+                        <div class="d-flex justify-content-center">
+                            <input type="text" id="table-filter" class="form-control w-50" placeholder="Filter Table">
+                        </div>
+                        
+                        <a class="btn btn-lg btn-create btn-outline-success text-white mt-3 mb-3" data-bs-toggle="modal" data-bs-target="#createCredentialModal">Create Account</a>
+                        <div class="table-responsive">
+                            <table class="table table-dark table-striped" style="word-wrap: break-word;">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>Title</th>
+                                        <th>Username</th>
+                                        <th>Email</th>
+                                        <th>Password</th>
+                                        <th>Website</th>
+                                        <th>Notes</th>
+                                        <th>Is Favorite</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for credential in user_creds %}
+                                    <tr class="table-row">
+                                        <td><a href="{% url 'cred-update' credential.id %}" class="btn btn-sm btn-outline-info mb-2">Update</a><a href="{% url 'cred-delete' credential.id %}" class="btn btn-sm btn-outline-danger mb-2">Delete</a></td>
+                                        <td>{{ credential.title }}</td>
+                                        <td>{{ credential.username }}</td>
+                                        <td>{{ credential.email }}</td>
+                                        <td>
+                                            <a href="{% url 'show-password' credential.id %}" class="btn btn-md btn-outline-primary text-white">Show</a>
+                                        </td>
+                                        
+                                        <td>{{ credential.website }}</td>
+                                        <td>{{ credential.notes }}</td>
+                                        {% if credential.is_favorite == True %}
+                                        <td><i class="bi bi-heart-fill" style="color: red; font-size: 24px;"></i></td>
+                                        {% else %}
+                                        <td><i class="bi bi-heart" style="font-size:24px;"></i></td>
+                                        {% endif %}
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    <script>
+        // JavaScript code to populate the password in the modal
+        $(document).ready(function() {
+            $('#passwordModal').on('show.bs.modal', function(event) {
+                var button = $(event.relatedTarget);
+                var password = button.data('password');
+                var modal = $(this);
+                modal.find('#passwordValue').text(password);
+            });
+            $('#table-filter').keyup(function() {
+            var filterValue = $(this).val().toLowerCase(); // Get the filter value
+            $('.table-row').each(function() { // Iterate over each table row
+                var rowText = $(this).text().toLowerCase(); // Get the text content of the row
+                if (rowText.indexOf(filterValue) > -1) {
+                    $(this).show(); // If the row matches the filter, show it
+                } else {
+                    $(this).hide(); // If the row doesn't match the filter, hide it
+                }
+            });
+        });
+        });
+    
+    </script>
+
+<script>
+    // JavaScript to handle password decryption and display
+    function showPassword(encryptedPassword, masterPin) {
+        // Perform an AJAX request to decrypt the password
+        $.ajax({
+            type: 'POST',
+            url: '{% url "decrypt-password"%}',
+            data: {
+                encrypted_password: encryptedPassword,
+                master_pin: masterPin,
+                csrfmiddlewaretoken: "{{ csrf_token }}"
+                
+            },
+            success: function(response) {
+                // Update the modal with the decrypted password
+                $('#passwordValue').text(response.decrypted_password);
+                // Show the modal
+                $('#passwordModal').modal('show');
+            },
+            error: function(xhr, status, error) {
+                console.log(error);
+            }
+        });
+    }
+</script>
+
+<script>
+    // JavaScript code to generate a secure random password
+    function generateRandomPassword(length) {
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$&*_';
+        let password = '';
+        for (let i = 0; i < length; i++) {
+            const randomIndex = Math.floor(Math.random() * characters.length);
+            password += characters.charAt(randomIndex);
+        }
+        return password;
+    }
+
+    // Attach a click event listener to the generate password button
+    document.getElementById('generatePasswordBtn').addEventListener('click', function () {
+        const passwordField = document.getElementById('id_password');
+        const generatedPassword = generateRandomPassword(20);  // Change the length as needed
+        passwordField.value = generatedPassword;
+    });
+</script>
+
+{% endblock%}
+

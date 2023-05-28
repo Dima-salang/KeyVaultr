@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+{% extends 'base.html'%}
+{% load static %}
+{% load crispy_forms_tags%}
+
+{% block extrahead %}
+    <style>
+        body {
+            background: linear-gradient(135deg, #000000, #192a56);
+            color: #ffffff;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .login-container {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-form {
+            max-width: 400px;
+            padding: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        .form-title {
+            font-size: 2rem;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            font-size: 1rem;
+            border-radius: 5px;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        
+    </style>
+{% endblock%}
+
+
+{% block content %}
+    <div class="login-container">
+        {% if messages %}
+        {% for message in messages %}
+        <div class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive"
+            aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    {{ message }}
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                    aria-label="Close"></button>
+            </div>
+        </div>
+        {% endfor %}
+        {% endif %}
+        <div class="login-form">
+            <h1 class="form-title">Login to KeyVaultr</h1>
+            <form method="post">
+                {% csrf_token %}
+                {{form|crispy}}
+                <div class="form-actions">
+                    
+                    <div class="row justify-content-center">
+                        <button type="submit" class="btn btn-outline-primary text-white mb-3">Login</button>
+                        <div class="text-center">
+                            <a href="{% url 'register' %}" class="text-white">Don't have an account?</a>
+                        </div>
+                    </div>
+                    
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+

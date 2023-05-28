@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+<title>Create Credential</title>
+{% endblock %}
+
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row min-vh-100">
+            <div class="col">
+                <div class="header">
+                    <h1 class="display-1">Key Vaultr</h1>
+                    <p class="lead">All In One Password Management System</p>
+                    <div class="form-container">
+                        <h2>Create Account Credential</h2>
+                        <form method="post">
+                            {% csrf_token %}
+                            <div class="form-control">
+                                <label for="title">Title</label>
+                                <input type="text" name="title" id="title" required>
+                            </div>
+                            <div class="form-control">
+                                <label for="username">Username</label>
+                                <input type="text" name="username" id="username" required>
+                            </div>
+                            <div class="form-control">
+                                <label for="email">Email</label>
+                                <input type="email" name="email" id="email">
+                            </div>
+                            <div class="form-control">
+                                <label for="password">Password</label>
+                                <input type="password" name="password" id="password" required>
+                            </div>
+                            <div class="form-control">
+                                <label for="website">Website</label>
+                                <input type="text" name="website" id="website" required>
+                            </div>
+                            <div class="form-control">
+                                <label for="notes">Notes</label>
+                                <textarea name="notes" id="notes" rows="4"></textarea>
+                            </div>
+                            <div class="form-control">
+                                <input type="submit" value="Create Credential">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+</html>
